@@ -1,0 +1,110 @@
+import barrios.*
+import elementos.*
+import plagas.*
+
+describe "test De Elemntos" {
+    test "casa es buena"{
+      const c = new Hogar(confort = 20 , mugre = 9)
+
+      assert.that(c.esBueno())
+    }
+
+    test "casa no es buena"{
+      const c = new Hogar(confort = 20 , mugre = 12)
+
+      assert.notThat(c.esBueno())
+    }
+
+    test "huerta es buena"{
+      const h = new Huertas (produccionPorMes = 23 , nivel = 21)
+
+      assert.that(h.esBueno())
+    }
+
+    test "huerta no es buena"{
+      const h = new Huertas (produccionPorMes = 23 , nivel = 24)
+
+      assert.notThat(h.esBueno())
+    }
+
+    test "mascota es buena"{
+      const m = new Mascota (salud = 276)
+
+      assert.that(m.esBueno())
+    }
+
+    test "mascota no es buena"{
+      const m = new Mascota (salud = 245)
+
+      assert.notThat(m.esBueno())
+    }
+  
+}
+
+describe "test barrio" {
+  test "barrrio es copado" {
+
+    const m = new Mascota (salud = 276)
+    const h = new Huertas (produccionPorMes = 23 , nivel = 21)
+    const c = new Hogar(confort = 20 , mugre = 9)
+
+    const b = new Barrio ( elementos = [m,h,c])
+
+    assert.that(b.esCopado())
+  }
+
+  test "barrrio no es copado" {
+
+    const m = new Mascota (salud = 241)
+    const h = new Huertas (produccionPorMes = 23 , nivel = 34)
+    const c = new Hogar(confort = 20 , mugre = 9)
+
+    const b = new Barrio ( elementos = [m,h,c])
+
+    assert.notThat(b.esCopado())
+  }
+}
+
+describe "test plgas" {
+  test "daño de cucarachas = 100, si poblacion = 200" {
+    const c = new Cucarachas (poblacion = 200 , pesoPromedio = 2)
+
+    assert.equals(100  , c.ataque())
+  }
+
+  test "mosquito transmite enfermedades, si su poblacion es 15" {
+
+    const m = new Mosquitos (poblacion = 15)
+
+    assert.that(m.transmiteEnfermedades())
+    
+  }
+}
+
+describe "test efectos de ataque en plagas y elementos" {
+  test "huerta baja 30  de proccion si la ataca una plaga con 20 de ataque y transmite enfermedades" {
+     const h = new Huertas (produccionPorMes = 33 , nivel = 21)
+     const p = new Pulgas (poblacion = 10)
+     h.sufirAtaque(p)
+
+     assert.equals(3, h.produccionPorMes())
+  }
+
+  test "garrapatas aumenta su poblacion de 60 a 72 cuando ataca"{
+    const g = new Garrapatas (poblacion = 60)
+    const h = new Huertas (produccionPorMes = 33 , nivel = 21)
+
+    g.atacarElementos(h)
+
+    assert.equals(72, g.poblacion())
+  }
+
+  test "cucarachas aunmenta su peso promedio a 2 por ataque"{
+    const c = new Cucarachas (poblacion = 200 , pesoPromedio = 2)
+    const h = new Huertas (produccionPorMes = 33 , nivel = 21)
+
+    c.atacarElementos(h)
+
+    assert.equals(4, c.pesoPromedio())
+  }
+}
